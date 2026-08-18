@@ -106,7 +106,7 @@
     "webpack": "5.90.0",
     "vscode-textmate": "9.2.0",
     "reflect-metadata": "0.1.13",
-    "@prg-cube/ui-core": "*",
-    "@prg-cube/ui-icons": "*"
+    "@prg-cube/ui-core": "^3.37.0",
+    "@prg-cube/ui-icons": "^3.37.0"
   }
 }
