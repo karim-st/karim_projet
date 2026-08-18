@@ -1,0 +1,32 @@
+{
+    "compilerOptions": {
+        "skipLibCheck": true,
+        "declaration": true,
+        "declarationMap": true,
+        "noImplicitAny": false,
+        "noEmitOnError": false,
+        "noImplicitThis": true,
+        "noUnusedLocals": false,
+        "strictNullChecks": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "downlevelIteration": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "target": "ES2017",
+        "jsx": "react-jsx",
+        "lib": [
+            "ES2021",
+            "dom"
+        ],
+        "sourceMap": true,
+        "rootDir": "src",
+        "outDir": "lib"
+    },
+    "include": [
+        "src"
+    ]
+}

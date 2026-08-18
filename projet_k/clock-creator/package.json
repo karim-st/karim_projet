@@ -1,0 +1,59 @@
+{
+  "name": "clock-creator",
+  "keywords": [
+    "theia-extension"
+  ],
+  "version": "0.0.0",
+  "description": "STM32 Clock Tree IDE for Eclipse Theia",
+  "author": "Clock Creator",
+  "license": "MIT",
+  "files": [
+    "lib",
+    "src"
+  ],
+  "dependencies": {
+    "@monaco-editor/react": "^4.6.0",
+    "@theia/core": "1.74.1",
+    "@theia/editor": "1.74.1",
+    "@theia/filesystem": "1.74.1",
+    "@theia/navigator": "1.74.1",
+    "@theia/workspace": "1.74.1",
+    "clsx": "^2.1.1",
+    "html-to-image": "^1.11.13",
+    "lucide-react": "^0.468.0",
+    "monaco-editor": "^0.52.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "reactflow": "^11.11.4",
+    "sonner": "^1.7.1",
+    "zustand": "^5.0.2"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^14.0.0",
+    "@types/jest": "^29.5.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.20",
+    "jest": "^29.5.0",
+    "jest-environment-jsdom": "^29.5.0",
+    "postcss": "^8.4.49",
+    "rimraf": "^5.0.0",
+    "tailwindcss": "^3.4.16",
+    "ts-jest": "^29.1.0",
+    "ts-node": "^10.9.1",
+    "typescript": "~5.4.5"
+  },
+  "scripts": {
+    "clean": "rimraf lib",
+    "build:css": "tailwindcss -i ./src/browser/style/tailwind-input.css -o ./src/browser/style/tailwind.css --minify",
+    "build": "tsc",
+    "watch": "tsc -w",
+    "watch:css": "tailwindcss -i ./src/browser/style/tailwind-input.css -o ./src/browser/style/tailwind.css --watch",
+    "test": "jest --config configs/jest.config.ts"
+  },
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/clock-creator-frontend-module"
+    }
+  ]
+}

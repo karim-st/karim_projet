@@ -1,0 +1,2 @@
+# Place VS Code / Open VSX extensions (.vsix extracted folders) here.
+# Started with: theia start --plugins=local-dir:../plugins

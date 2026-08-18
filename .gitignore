@@ -1,0 +1,16 @@
+node_modules
+.browser_modules
+lib
+*.log
+*-app/*
+!*-app/package.json
+!*-app/resources
+!*-app/electron-builder.yml
+!*-app/LICENSE
+.nyc_output
+coverage
+**/bundle
+npm/clockchecker/build
+**/server/*.js
+**/server/*.js.map
+.nx

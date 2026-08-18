@@ -1,0 +1,144 @@
+name: Release into Artifactory
+on:
+  workflow_dispatch:
+    inputs:
+      githubAccessTokenSecretName:
+        description: 'The secret''s name containing a valid access-token to access (pull/push) the cube-manifest repository.'
+        required: true
+        type: string
+        default: 'BOT_PRG_CUBE'
+      runner:
+        type: string
+        description: 'Runner label'
+        required: true
+        default: 'cube2-windows'
+      artifactoryAccessTokenSecretName:
+        description: 'The secret''s name containing Artifactory config-key'
+        required: true
+        type: string
+        default: 'JF_SECRET_ENV'
+      artifactoryPath:
+        description: 'The Artifactory path where the CubeSTUDIO artifacts will be uploaded (without the trailing slash).'
+        required: true
+        type: string
+        default: 'mcdc2tools-deliverables-dev-local/clock-creator'
+      emailSendTo:
+        description: 'List of destination the notification email will be sent to (semi-colon separated). If empty, no notificatio-email is sent'
+        required: false
+        type: string
+      emailSendCC:
+        description: 'List of destination the notification email will be sent as copy (semi-colon separated). If empty, no notificatio-email is sent'
+        required: false
+        type: string
+
+  workflow_call:
+    inputs:
+      githubAccessTokenSecretName:
+        type: string
+        description: 'Runner label'
+        required: true
+      runner:
+        type: string
+        description: 'Runner label'
+        required: true
+      artifactoryAccessTokenSecretName:
+        description: 'The secret''s name containing Artifactory config-key'
+        required: true
+        type: string
+      artifactoryPath:
+        description: 'The Artifactory path where the CubeSTUDIO artifacts will be uploaded (without the trailing slash).'
+        required: true
+        type: string
+        default: 'mcdc2tools-bundles-dev-local/deliverables'
+      emailSendTo:
+        description: 'List of destination the notification email will be sent to (semi-colon separated). If empty, no notificatio-email is sent'
+        required: false
+        type: string
+      emailSendCC:
+        description: 'List of destination the notification email will be sent as copy (semi-colon separated). If empty, no notificatio-email is sent'
+        required: false
+        type: string
+
+jobs:
+  build:
+    runs-on: ${{ inputs.runner }}
+    defaults:
+      run:
+        shell: bash
+    steps:          
+      - name: cleanup workspace
+        uses: SVC-COMMON-ACTIONS/workspace-clean@v1
+
+      - name: checkout utility-clock-creator
+        uses: actions/checkout@v3
+        with:
+          repository: 'prg-cube/utility-clock-creator'
+          ref: 'main'
+          token: ${{ secrets[inputs.githubAccessTokenSecretName] }}
+
+      - name: install nodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22.17.1'
+
+      - name: set npm registry
+        run: |
+          yarn config set registry https://registry.yarnpkg.com/
+          yarn config set @prg-cube:registry https://npm.pkg.github.com/
+          yarn config list
+
+      - name: Set env
+        run: |
+          httpProxyURL=${HTTP_PROXY} || ${http_proxy}
+          echo "YARN_PROXY=${httpProxyURL}" >> $GITHUB_ENV
+          echo "YARN_HTTPS_PROXY=${httpProxyURL}" >> $GITHUB_ENV
+          echo "HTTP_PROXY=${httpProxyURL}" >> $GITHUB_ENV
+          echo "HTTPS_PROXY=${httpProxyURL}" >> $GITHUB_ENV
+          echo "CHILD_CONCURRENCY=1" >> $GITHUB_ENV
+          echo "ELECTRON_GET_USE_PROXY=true" >> $GITHUB_ENV
+          echo "ELECTRON_ENABLE_LOGGING=true" >> $GITHUB_ENV
+          echo "ftp_proxy=${httpProxyURL}" >> $GITHUB_ENV
+          echo "RSYNC_PROXY=${httpProxyURL}" >> $GITHUB_ENV
+          echo "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true" >> $GITHUB_ENV
+          echo "PUPPETEER_SKIP_DOWNLOAD=true" >> $GITHUB_ENV
+
+      - name: Setup Artifactory CLI
+        id: setupArtifactoryCli
+        uses: jfrog/setup-jfrog-cli@v3.3.0
+        env:
+          JF_ENV_1: ${{ secrets[inputs.artifactoryAccessTokenSecretName] }}
+
+      - name: get release version
+        id: getReleaseVersion
+        run: |
+          version=$(cat electron-app/package.json |jq -r '.version')
+          echo "version=${version}" >> $GITHUB_OUTPUT
+
+
+      - name: build project with yarn
+        run: |
+          npm config set @prg-cube:registry https://npm.pkg.github.com/
+          npm config set //npm.pkg.github.com/:_authToken ${{ secrets[inputs.githubAccessTokenSecretName] }}
+          yarn cache clean
+          yarn install
+          yarn build
+          yarn electron build
+          yarn electron package
+
+      - name: upload artifact
+        run: |
+          echo "upload built artifacts into ${{ inputs.artifactoryPath }}"
+          jf rt u  --ant --flat --exclusions "**/*-debug.yml" "electron-app/dist/*" ${{ inputs.artifactoryPath }}/ # ant:true to upload only the local files and not the directory used for build
+          
+      - name: send notification email
+        uses: SVC-COMMON-ACTIONS/send-email@v4
+        with:
+          MAIL_TO: ${{ inputs.emailSendTo }}
+          MAIL_CC: ${{ inputs.emailSendCC }}
+          SUBJECT: "utility-clock-creator release ${{ steps.getReleaseVersion.outputs.version }}"
+          BODY: "All,\n\nThe utility-clock-creator version ${{ steps.getReleaseVersion.outputs.version }} has been released. You can download the installer here: https://artifactory.st.com/artifactory/${{ inputs.artifactoryPath }}/STM32CubeUtilityClockCreator-Installer-${{ steps.getReleaseVersion.outputs.version }}.exe.\n"
+        if: inputs.emailSendTo != ''
+
+      - name: cleanup workspace
+        uses: SVC-COMMON-ACTIONS/workspace-clean@v1
+        if : ${{ always() && vars.DEBUG != 'true' }}

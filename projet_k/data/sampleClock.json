@@ -1,0 +1,43 @@
+{
+  "name": "Clock Creator Demo",
+  "version": "1.0.0",
+  "metadata": {
+    "author": "ALFRED",
+    "createdAt": "2026-07-17T00:00:00.000Z",
+    "updatedAt": "2026-07-17T00:00:00.000Z"
+  },
+  "nodes": [
+    {
+      "id": "n1",
+      "type": "input",
+      "label": "Clock Source",
+      "position": { "x": 100, "y": 100 }
+    },
+    {
+      "id": "n2",
+      "type": "default",
+      "label": "Divider",
+      "position": { "x": 400, "y": 120 }
+    },
+    {
+      "id": "n3",
+      "type": "output",
+      "label": "Output Clock",
+      "position": { "x": 700, "y": 140 }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1-2",
+      "source": "n1",
+      "target": "n2",
+      "label": "clk_in"
+    },
+    {
+      "id": "e2-3",
+      "source": "n2",
+      "target": "n3",
+      "label": "clk_out"
+    }
+  ]
+}

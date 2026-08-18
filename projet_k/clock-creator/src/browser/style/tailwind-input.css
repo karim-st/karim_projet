@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Scope resets so Theia chrome is not broken */
+.clock-creator-root,
+.clock-creator-root * {
+  box-sizing: border-box;
+}
+
+.clock-creator-root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: var(--theia-ui-font-family, "Segoe UI", sans-serif);
+  color: var(--theia-foreground, #1f2937);
+  background: var(--theia-editor-background, #f5f7fb);
+}
+
+.clock-creator-root .react-flow__attribution {
+  display: none;
+}
+
+/* Papier millimétré : petit carreau 20px + quadrillage fort 100px */
+.clock-background-graph-paper {
+  background-image:
+    linear-gradient(to right, #e4e9f0 1px, transparent 1px),
+    linear-gradient(to bottom, #e4e9f0 1px, transparent 1px),
+    linear-gradient(to right, #c9d2de 1px, transparent 1px),
+    linear-gradient(to bottom, #c9d2de 1px, transparent 1px);
+  background-position: -1px -1px;
+  background-size: 20px 20px, 20px 20px, 100px 100px, 100px 100px;
+  background-repeat: repeat;
+}
+
+.dark .clock-background-graph-paper {
+  background-image:
+    linear-gradient(to right, #232d3b 1px, transparent 1px),
+    linear-gradient(to bottom, #232d3b 1px, transparent 1px),
+    linear-gradient(to right, #3a4658 1px, transparent 1px),
+    linear-gradient(to bottom, #3a4658 1px, transparent 1px);
+}
+
+/* Isométrique : réseau de losanges 60°/120° */
+.clock-background-isometric {
+  background-image:
+    linear-gradient(30deg, #cdd5e0 12%, transparent 12.5%, transparent 87%, #cdd5e0 87.5%, #cdd5e0),
+    linear-gradient(150deg, #cdd5e0 12%, transparent 12.5%, transparent 87%, #cdd5e0 87.5%, #cdd5e0),
+    linear-gradient(30deg, #e4e9f0 12%, transparent 12.5%, transparent 87%, #e4e9f0 87.5%, #e4e9f0),
+    linear-gradient(150deg, #e4e9f0 12%, transparent 12.5%, transparent 87%, #e4e9f0 87.5%, #e4e9f0),
+    linear-gradient(60deg, #edf1f6 25%, transparent 25.5%, transparent 75%, #edf1f6 75%, #edf1f6),
+    linear-gradient(60deg, #edf1f6 25%, transparent 25.5%, transparent 75%, #edf1f6 75%, #edf1f6);
+  background-position: 0 0, 0 0, 32px 56px, 32px 56px, 0 0, 32px 56px;
+  background-size: 64px 112px;
+  background-repeat: repeat;
+}
+
+.dark .clock-background-isometric {
+  background-image:
+    linear-gradient(30deg, #303b4d 12%, transparent 12.5%, transparent 87%, #303b4d 87.5%, #303b4d),
+    linear-gradient(150deg, #303b4d 12%, transparent 12.5%, transparent 87%, #303b4d 87.5%, #303b4d),
+    linear-gradient(30deg, #3a4658 12%, transparent 12.5%, transparent 87%, #3a4658 87.5%, #3a4658),
+    linear-gradient(150deg, #3a4658 12%, transparent 12.5%, transparent 87%, #3a4658 87.5%, #3a4658),
+    linear-gradient(60deg, #232d3b 25%, transparent 25.5%, transparent 75%, #232d3b 75%, #232d3b),
+    linear-gradient(60deg, #232d3b 25%, transparent 25.5%, transparent 75%, #232d3b 75%, #232d3b);
+}
+
+/* Zones fonctionnelles : exactement 4 zones colorées réparties sur toute la largeur */
+.clock-background-zones {
+  background-image:
+    linear-gradient(to right, rgba(59, 130, 246, 0.07) 0 25%, rgba(248, 113, 113, 0.07) 25% 50%, rgba(34, 197, 94, 0.07) 50% 75%, rgba(245, 158, 11, 0.07) 75% 100%),
+    repeating-linear-gradient(to right, rgba(100, 116, 139, 0.45) 0 1px, transparent 1px 25%);
+  background-repeat: no-repeat;
+}
+
+.dark .clock-background-zones {
+  background-image:
+    linear-gradient(to right, rgba(59, 130, 246, 0.14) 0 25%, rgba(248, 113, 113, 0.14) 25% 50%, rgba(34, 197, 94, 0.14) 50% 75%, rgba(245, 158, 11, 0.14) 75% 100%),
+    repeating-linear-gradient(to right, rgba(148, 163, 184, 0.3) 0 1px, transparent 1px 25%);
+}

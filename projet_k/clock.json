@@ -1,0 +1,11 @@
+{
+  "master_clock_version": "1.0.0",
+  "copyright": "clock",
+  "version": "1.0.0",
+  "tree": {
+    "id": "clock",
+    "schema_version": "1.0.0",
+    "elements": [],
+    "transitions": []
+  }
+}

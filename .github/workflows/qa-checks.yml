@@ -1,0 +1,34 @@
+name: QA Checks
+concurrency:
+    group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+    cancel-in-progress: true
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Repository branch"
+        # Default value if no value is explicitly provided
+        default: "main"
+        # Use default value if not provided
+        required: false
+  push:
+      branches: [main, alpha*, release*]
+  pull_request:
+      branches: [main, alpha*, release*]
+
+jobs:
+  run-qa-checks:
+    uses: PRG-Cube/internal-aci/.github/workflows/centralized-qa-checks.yml@v1
+    with:
+      repository: ${{ github.repository }}
+      branch: ${{ github.event.pull_request.head.ref || inputs.branch || github.ref }}
+      report_coverage: true
+      MAIL_TO: nabil.safi@st.com
+    secrets: inherit
+
+  run-blackduck-scan:
+      uses: PRG-Cube/internal-aci/.github/workflows/centralized-blackduck.yml@v1
+      with:
+          repository: ${{ github.repository }}
+          branch: ${{ github.event.pull_request.head.ref || inputs.branch || github.ref }}
+      secrets: inherit
